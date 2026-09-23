@@ -167,21 +167,32 @@ const barsContainer = document.getElementById("bars");
 // =====================================================================
 // API url persistence
 // =====================================================================
+function normalizeApiUrl(url) {
+  const trimmed = (url || "").trim();
+  if (!trimmed) return DEFAULT_API_URL;
+  // Ignore stale local-dev URLs from earlier versions of this UI.
+  if (/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?(\/predict)?\/?$/i.test(trimmed)) {
+    return DEFAULT_API_URL;
+  }
+  // Origin-only URLs (common mistake) need the /predict path.
+  if (/^https?:\/\/[^/]+\/?$/i.test(trimmed)) {
+    return trimmed.replace(/\/?$/, "") + "/predict";
+  }
+  return trimmed;
+}
+
 function loadApiUrl() {
   try {
-    const stored = localStorage.getItem("predictApiUrl");
-    // Ignore stale local-dev URLs from earlier versions of this UI.
-    if (stored && /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/predict\/?$/i.test(stored.trim())) {
-      return DEFAULT_API_URL;
-    }
-    return stored || DEFAULT_API_URL;
+    return normalizeApiUrl(localStorage.getItem("predictApiUrl") || DEFAULT_API_URL);
   } catch (e) {
     return DEFAULT_API_URL;
   }
 }
 apiUrlInput.value = loadApiUrl();
 apiUrlInput.addEventListener("change", () => {
-  try { localStorage.setItem("predictApiUrl", apiUrlInput.value.trim()); } catch (e) {}
+  const normalized = normalizeApiUrl(apiUrlInput.value);
+  apiUrlInput.value = normalized;
+  try { localStorage.setItem("predictApiUrl", normalized); } catch (e) {}
 });
 
 // =====================================================================
