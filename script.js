@@ -4,13 +4,13 @@
 
 // Default location of your FastAPI server. Editable in the footer input,
 // and remembered in this browser via localStorage.
-const DEFAULT_API_URL = "https://new-york-airbnb.onrender.com";
+const DEFAULT_API_URL = "http://127.0.0.1:8000/predict";
 
-// scikit-learn sorts string class labels alphabetically by default, so
-// model.predict_proba()'s columns are assumed to line up with this order.
-// If your model was trained with a different label set, edit this array —
-// it only affects how the probability bars are labelled, not the request.
-const CLASS_LABELS = ["Entire home/apt", "Hotel room", "Private room", "Shared room"];
+// Confirmed from a live prediction on the deployed model: it returns 3
+// probabilities, not 4 — there's no "Hotel room" class. sklearn sorts
+// string labels alphabetically by default, and this order was verified
+// against a real response (index 1 was highest, matching "Private room").
+const CLASS_LABELS = ["Entire home/apt", "Private room", "Shared room"];
 
 // Representative NYC neighbourhoods per borough, for the datalist.
 const NEIGHBOURHOODS = {
