@@ -6,11 +6,7 @@ The project combines a trained **Scikit-learn ML model**, **FastAPI backend**, a
 
 ## 🚀 Live Demo
 
-**Frontend:**
-https://new-york-airbnb-1.onrender.com/
-
-**Backend API:**
-https://new-york-airbnb.onrender.com/
+# **[🌙 Night Check-In — Airbnb Room Type Predictor](https://new-york-airbnb-1.onrender.com/)**
 
 ## ✨ Features
 
