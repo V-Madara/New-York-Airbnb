@@ -4,7 +4,7 @@
 
 // Same-origin by default (FastAPI serves the UI + /predict together).
 // Override via the footer input; remembered in localStorage.
-const DEFAULT_API_URL = "/predict";
+const DEFAULT_API_URL = "https://new-york-airbnb.onrender.com";
 
 // Fallback labels if the API response omits `classes`.
 // Model classes (alphabetical): Entire home/apt, Private room, Shared room.
