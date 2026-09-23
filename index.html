@@ -27,7 +27,7 @@
     <header class="masthead">
       <p class="kicker">A listing arrives after dark</p>
       <h1>Guess the room<br>before you book it.</h1>
-      <p class="lede">Enter a listing's numbers — its price, its street, its track record — and the model will tell you whether you've found a whole apartment, a private room, a shared room, or a hotel room.</p>
+      <p class="lede">Enter a listing's numbers — its price, its street, its track record — and the model will tell you whether you've found a whole apartment, a private room, or a shared room.</p>
     </header>
 
     <main class="stage">
@@ -73,7 +73,7 @@
             <div class="field-row">
               <div class="field">
                 <label for="price">Price per night ($)</label>
-                <input type="number" id="price" min="0" step="1" placeholder="150" required>
+                <input type="number" id="price" min="1" step="1" placeholder="150" required>
               </div>
               <div class="field">
                 <label for="minimum_nights">Minimum nights</label>
@@ -178,8 +178,8 @@
 
     <footer class="api-footer">
       <label for="api-url">API endpoint</label>
-      <input type="text" id="api-url" spellcheck="false">
-      <span class="api-hint">Saved locally in your browser</span>
+      <input type="text" id="api-url" spellcheck="false" value="/predict">
+      <span class="api-hint">Defaults to same-origin <code>/predict</code> · saved in this browser</span>
     </footer>
 
   </div>

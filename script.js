@@ -2,14 +2,12 @@
 // Config
 // =====================================================================
 
-// Default location of your FastAPI server. Editable in the footer input,
-// and remembered in this browser via localStorage.
-const DEFAULT_API_URL = "https://new-york-airbnb.onrender.com/predict";
+// Same-origin by default (FastAPI serves the UI + /predict together).
+// Override via the footer input; remembered in localStorage.
+const DEFAULT_API_URL = "/predict";
 
-// Confirmed from a live prediction on the deployed model: it returns 3
-// probabilities, not 4 — there's no "Hotel room" class. sklearn sorts
-// string labels alphabetically by default, and this order was verified
-// against a real response (index 1 was highest, matching "Private room").
+// Fallback labels if the API response omits `classes`.
+// Model classes (alphabetical): Entire home/apt, Private room, Shared room.
 const CLASS_LABELS = ["Entire home/apt", "Private room", "Shared room"];
 
 // Representative NYC neighbourhoods per borough, for the datalist.
@@ -171,7 +169,12 @@ const barsContainer = document.getElementById("bars");
 // =====================================================================
 function loadApiUrl() {
   try {
-    return localStorage.getItem("predictApiUrl") || DEFAULT_API_URL;
+    const stored = localStorage.getItem("predictApiUrl");
+    // Ignore stale local-dev URLs from earlier versions of this UI.
+    if (stored && /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/predict\/?$/i.test(stored.trim())) {
+      return DEFAULT_API_URL;
+    }
+    return stored || DEFAULT_API_URL;
   } catch (e) {
     return DEFAULT_API_URL;
   }
@@ -267,7 +270,7 @@ form.addEventListener("submit", async (e) => {
   } catch (err) {
     errorDetail.textContent = err.message && err.message !== "Failed to fetch"
       ? err.message
-      : `Couldn't reach ${apiUrl}. Is the FastAPI server running and is CORS allowed?`;
+      : `Couldn't reach ${apiUrl}. Is the server running?`;
     showState("error");
   } finally {
     setLoading(false);
@@ -284,17 +287,21 @@ function setLoading(isLoading) {
 // =====================================================================
 function renderResult(data, seed) {
   const predicted = data.Predicted_room_type ?? data.predicted_room_type ?? "Unknown";
-  const probs = Array.isArray(data.Probability ?? data.probability) ? (data.Probability ?? data.probability) : [];
+  const probs = Array.isArray(data.Probability ?? data.probability)
+    ? (data.Probability ?? data.probability)
+    : [];
+  const apiClasses = Array.isArray(data.classes) ? data.classes : null;
 
   animateBuildingSelection(predicted, seed);
 
   resultType.textContent = predicted;
 
-  // Pair probabilities with labels; fall back to generic names if lengths
-  // don't match what CLASS_LABELS expects.
-  const labels = probs.length === CLASS_LABELS.length
-    ? CLASS_LABELS
-    : probs.map((_, i) => `Class ${i + 1}`);
+  // Prefer class names from the API; fall back to known labels / generic names.
+  const labels = apiClasses && apiClasses.length === probs.length
+    ? apiClasses
+    : (probs.length === CLASS_LABELS.length
+        ? CLASS_LABELS
+        : probs.map((_, i) => `Class ${i + 1}`));
 
   const rows = labels.map((label, i) => ({ label, value: probs[i] ?? 0 }))
                       .sort((a, b) => b.value - a.value);
