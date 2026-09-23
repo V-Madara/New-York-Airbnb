@@ -4,7 +4,7 @@
 
 // Default location of your FastAPI server. Editable in the footer input,
 // and remembered in this browser via localStorage.
-const DEFAULT_API_URL = "http://127.0.0.1:8000/predict";
+const DEFAULT_API_URL = "https://new-york-airbnb.onrender.com/predict";
 
 // Confirmed from a live prediction on the deployed model: it returns 3
 // probabilities, not 4 — there's no "Hotel room" class. sklearn sorts
