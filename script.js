@@ -4,7 +4,7 @@
 
 // Default location of your FastAPI server. Editable in the footer input,
 // and remembered in this browser via localStorage.
-const DEFAULT_API_URL = "http://127.0.0.1:8000/predict";
+const DEFAULT_API_URL = "https://new-york-airbnb.onrender.com";
 
 // scikit-learn sorts string class labels alphabetically by default, so
 // model.predict_proba()'s columns are assumed to line up with this order.
